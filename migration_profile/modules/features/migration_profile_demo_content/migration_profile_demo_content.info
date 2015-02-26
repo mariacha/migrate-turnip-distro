@@ -1,6 +1,6 @@
-name = PROJECTNAME Demo Content
+name = Migration example Demo Content
 core = 7.x
-package = PROJECTNAME
+package = Migration example
 dependencies[] = ctools
 dependencies[] = deploy
 dependencies[] = entity

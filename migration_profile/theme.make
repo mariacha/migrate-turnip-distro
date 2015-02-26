@@ -36,7 +36,7 @@ libraries[modernizr][directory_name] = "modernizr"
 libraries[alphecca][download][type] = "git"
 libraries[alphecca][download][tag] = "0.1.0"
 libraries[alphecca][download][url] = "https://github.com/opensourcery/alphecca.git"
-libraries[alphecca][destination] = "themes/custom/THEME/vendor"
+libraries[alphecca][destination] = "themes/custom/migraiton_theme/vendor"
 libraries[alphecca][download][directory_name] = "alphecca"
 
 ; Themes

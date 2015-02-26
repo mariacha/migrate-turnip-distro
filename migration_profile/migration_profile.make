@@ -18,6 +18,8 @@ projects[drupal][patch][] = "https://drupal.org/files/string-offset-cast-1824820
 ; Base installation profile
 includes[base] = "base.make"
 
+includes[migrate] = "migrate.make"
+
 ; Image handling. Comment this out if you don't need any image handling.
 includes[images] = "images.make"
 
