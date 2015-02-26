@@ -6,27 +6,30 @@
 
 /**
  * Implements hook_flush_caches().
+ *
+ * Re-find the migrations every time you flush caches.
  */
-function solar_migrate_flush_caches() {
-  solar_migrate_register_migrations();
+function p2migrate_starter_flush_caches() {
+  p2migrate_starter_register_migrations();
 }
 
 /**
  * Implements hook_migrate_api().
+ *
+ * Sets up the migration(s).
  */
-function solar_migrate_migrate_api() {
+function p2migrate_starter_migrate_api() {
   // Set source file directory. This variable should be set in
   // `settings.local.php`.
-  $file_path = variable_get('solar_migrate_drupal_source_file_directory', FALSE);
+  $file_path = variable_get('p2migrate_starter_drupal_source_file_directory', FALSE);
   if (!file_exists($file_path)) {
-    throw new \Exception(sprintf('No file directory found at %s. If you plan to migrate files, please add the variable "solar_migrate_drupal_source_file_directory" to your settings.php file.', $file_path));
+    throw new \Exception(sprintf('No file directory found at %s. If you plan to migrate files, please add the variable "p2migrate_starter_drupal_source_file_directory" to your settings.php file.', $file_path));
   }
-
   $api = array(
     'api' => 2,
     'groups' => array(
-      's4rs6' => array(
-        'title' => t('Solar 4R Schools legacy D6 content'),
+      'simple_example' => array(
+        'title' => t('Example migration with from D6 to D7.'),
       ),
     ),
   );
@@ -37,7 +40,7 @@ function solar_migrate_migrate_api() {
 /**
  * Register all D6->D7 migrations.
  */
-function solar_migrate_register_migrations() {
+function p2migrate_starter_register_migrations() {
   /**
    * Each migration being registered takes an array of arguments, some required
    * and some optional. Start with the common arguments required by all - the
@@ -50,7 +53,7 @@ function solar_migrate_register_migrations() {
   $common_arguments = array(
     'source_connection' => 'legacydrupal',
     'source_version' => 6,
-    'group_name' => 's4rs6',
+    'group_name' => 'simple_example',
   );
 
   // Begin migration: Files.
@@ -58,126 +61,10 @@ function solar_migrate_register_migrations() {
     'description' => t('Migration of files from Drupal 6'),
     'machine_name' => 'Files',
     'default_uid' => 1,
-    'source_dir' => variable_get('solar_migrate_drupal_source_file_directory', FALSE),
+    'source_dir' => variable_get('p2migrate_starter_drupal_source_file_directory', FALSE),
     'destination_dir' => 'public://legacy_files',
   );
 
   Migration::registerMigration('DrupalFile6Migration', $arguments['machine_name'],
-                               $arguments);
-
-  // Begin migration: Schools, Decks, Kiosks.
-  $node_arguments = array(
-    array(
-      'class_name' => 'SolarProjectsMigration',
-      'description' => t('Migration of general Schools data to a Project.'),
-      'machine_name' => 'Schools',
-      'source_type' => 'fat_spaniel_site',
-      'destination_type' => 'project',
-      'dependencies' => array('Files'),
-    ),
-    array(
-      'class_name' => 'SolarProjectsMigration',
-      'description' => t('Migration of general Deck Monitoring Location data to a Project'),
-      'machine_name' => 'Decks',
-      'source_type' => 'deck_monitoring_location',
-      'destination_type' => 'project',
-      'dependencies' => array('Files'),
-    ),
-    array(
-      'class_name' => 'SolarClassroomsMigration',
-      'description' => t('Migration of Classroom Locations data'),
-      'machine_name' => 'Classrooms',
-      'source_type' => 'sub_school',
-      'destination_type' => 'project',
-      'dependencies' => array('Decks', 'Schools'),
-    ),
-    array(
-      'class_name' => 'SolarKiosksMigration',
-      'description' => t('Migration of Kiosk data'),
-      'machine_name' => 'Kiosk',
-      'source_type' => 'kiosk',
-      'destination_type' => 'kiosk',
-      'dependencies' => array(
-        'Decks',
-        'Schools',
-        'KioskPage',
-      ),
-    ),
-    array(
-      'class_name' => 'SolarKioskPagesMigration',
-      'description' => t('Migration of Kiosk Page data'),
-      'machine_name' => 'KioskPage',
-      'source_type' => 'kiosk_page',
-      'destination_type' => 'fieldable_panels_pane',
-      'bundle' => 'green_tech_content',
-    ),
-    array(
-      'class_name' => 'SolarKioskCustomPagesMigration',
-      'description' => t('Migration of Kiosk Page data'),
-      'machine_name' => 'KioskCustomPage',
-      'source_type' => 'kiosk_page_custom',
-      'destination_type' => 'fieldable_panels_pane',
-      'bundle' => 'green_tech_content',
-      'dependencies' => array('Kiosk'),
-    ),
-  );
-
-  $common_node_arguments = $common_arguments + array(
-    'default_uid' => 1,
-  );
-  foreach ($node_arguments as $arguments) {
-    $arguments = array_merge_recursive($arguments, $common_node_arguments);
-    Migration::registerMigration($arguments['class_name'], $arguments['machine_name'],
-                                 $arguments);
-  }
-
-  // Begin migration: Funder.
-  $arguments = $common_arguments + array(
-    'description' => t('Migration of funders from Drupal 6 -- user create'),
-    'machine_name' => 'Funder',
-    'dependencies' => array('Decks', 'Schools', 'Classrooms'),
-  );
-
-  Migration::registerMigration('DrupalFunderMigration', $arguments['machine_name'],
-                               $arguments);
-
-  // Begin migration: FunderProfile.
-  $arguments = $common_arguments + array(
-    'description' => t('Migration of funders from Drupal 6 -- profile create'),
-    'machine_name' => 'FunderProfile',
-    'source_type' => 'funder',
-    'dependencies' => array('Files', 'Funder'),
-  );
-
-  Migration::registerMigration('DrupalFunderProfileMigration', $arguments['machine_name'],
-                               $arguments);
-
-  // Begin migration: Presets.
-  $arguments = $common_arguments + array(
-    'description' => t('Generation Variable Presets'),
-    'machine_name' => 'Presets',
-  );
-
-  Migration::registerMigration('SolarGenerationPresetsMigration', $arguments['machine_name'],
-                               $arguments);
-
-  // Begin migration: Site variables.
-  $arguments = $common_arguments + array(
-    'description' => t('Generation Variable per Site'),
-    'machine_name' => 'SiteVariables',
-    'dependencies' => array('Decks', 'Schools', 'Presets'),
-  );
-
-  Migration::registerMigration('SolarGenerationSiteVariablesMigration', $arguments['machine_name'],
-                               $arguments);
-
-  // Begin migration: Site variables.
-  $arguments = $common_arguments + array(
-    'description' => t('Generation Variable per Site Explore center'),
-    'machine_name' => 'ExploreVariables',
-    'dependencies' => array('Decks', 'Schools', 'Presets'),
-  );
-
-  Migration::registerMigration('SolarGenerationChartVariablesMigration', $arguments['machine_name'],
                                $arguments);
 }
