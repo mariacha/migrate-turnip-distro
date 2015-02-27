@@ -35,6 +35,9 @@ includes[theme] = "theme.make"
 
 ; Project-specific modules, and overrides.
 
+; Profile2
+projects[profile2][version] = "1.3"
+
 ; Profile2 Privacy
 projects[profile2_privacy][download][branch] = "7.x-1.x"
 projects[profile2_privacy][download][revision] = "61e9ea8"
