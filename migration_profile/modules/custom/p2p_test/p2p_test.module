@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Profile2 privacy testing feature.
+ */
+
+include_once 'p2p_test.features.inc';

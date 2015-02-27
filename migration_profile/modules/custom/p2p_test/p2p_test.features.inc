@@ -1,13 +1,22 @@
 <?php
 /**
  * @file
- * priofile2_privacy_testing.features.inc
+ * p2p_test.features.inc
  */
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function p2p_test_ctools_plugin_api($module = NULL, $api = NULL) {
+  if ($module == "strongarm" && $api == "strongarm") {
+    return array("version" => "1");
+  }
+}
 
 /**
  * Implements hook_default_profile2_type().
  */
-function priofile2_privacy_testing_default_profile2_type() {
+function p2p_test_default_profile2_type() {
   $items = array();
   $items['main'] = entity_import('profile2_type', '{
     "userCategory" : true,

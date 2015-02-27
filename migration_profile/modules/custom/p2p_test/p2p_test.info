@@ -1,0 +1,17 @@
+name = Profile2 privacy testing
+description = Features for testing profile2 privacy
+core = 7.x
+package = Profile2 privacy
+dependencies[] = entity
+dependencies[] = profile2
+dependencies[] = text
+features[ctools][] = strongarm:strongarm:1
+features[features_api][] = api:2
+features[profile2_type][] = main
+features[profile2_type][] = secondary_profile_type
+features_exclude[dependencies][ctools] = ctools
+features_exclude[dependencies][features] = features
+features_exclude[field_base][field_name] = field_name
+features_exclude[field_base][field_secondary_name] = field_secondary_name
+features_exclude[field_instance][profile2-main-field_name] = profile2-main-field_name
+features_exclude[field_instance][profile2-secondary_profile_type-field_secondary_name] = profile2-secondary_profile_type-field_secondary_name
