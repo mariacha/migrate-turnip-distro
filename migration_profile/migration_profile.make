@@ -18,8 +18,6 @@ projects[drupal][patch][] = "https://drupal.org/files/string-offset-cast-1824820
 ; Base installation profile
 includes[base] = "base.make"
 
-includes[migrate] = "migrate.make"
-
 ; Image handling. Comment this out if you don't need any image handling.
 includes[images] = "images.make"
 
@@ -36,6 +34,10 @@ includes[images] = "images.make"
 includes[theme] = "theme.make"
 
 ; Project-specific modules, and overrides.
+
+; Profile2 Privacy
+projects[profile2_privacy][download][branch] = "7.x-1.x"
+projects[profile2_privacy][download][revision] = "61e9ea8"
 
 ; Superfish
 projects[superfish][download][branch] = "7.x-1.x"
